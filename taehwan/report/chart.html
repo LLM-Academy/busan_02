@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>광안리해수욕장 후기 태그별 건수</title>
+<style>
+  .viz-root {
+    color-scheme: light;
+    --surface-1: #fcfcfb;
+    --text-primary: #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted: #7a7974;
+    --grid: #e6e5e1;
+    --series-1: #2a78d6;
+    --tip-bg: #0b0b0b;
+    --tip-fg: #fcfcfb;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) .viz-root {
+      color-scheme: dark;
+      --surface-1: #1a1a19;
+      --text-primary: #f0efec;
+      --text-secondary: #c3c2b7;
+      --text-muted: #96958c;
+      --grid: #34332f;
+      --series-1: #3987e5;
+      --tip-bg: #f0efec;
+      --tip-fg: #1a1a19;
+    }
+  }
+  :root[data-theme="dark"] .viz-root {
+    color-scheme: dark;
+    --surface-1: #1a1a19;
+    --text-primary: #f0efec;
+    --text-secondary: #c3c2b7;
+    --text-muted: #96958c;
+    --grid: #34332f;
+    --series-1: #3987e5;
+    --tip-bg: #f0efec;
+    --tip-fg: #1a1a19;
+  }
+  html, body { margin: 0; }
+  .viz-root {
+    background: var(--surface-1);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+    min-height: 100vh;
+    padding: 32px 24px;
+    box-sizing: border-box;
+  }
+  .card { max-width: 820px; margin: 0 auto; }
+  h1 { font-size: 20px; line-height: 1.4; margin: 0 0 8px; font-weight: 650; }
+  .sub { font-size: 13px; line-height: 1.6; color: var(--text-secondary); margin: 0 0 24px; }
+  .group { font-size: 12px; font-weight: 600; color: var(--text-secondary); margin: 20px 0 6px;
+           padding-bottom: 4px; border-bottom: 1px solid var(--grid); }
+  .row { display: grid; grid-template-columns: 170px 1fr; align-items: center; height: 32px; position: relative; }
+  .row:focus-visible { outline: 2px solid var(--series-1); outline-offset: 2px; border-radius: 4px; }
+  .label { font-size: 13px; color: var(--text-primary); text-align: right; padding-right: 12px;
+           white-space: nowrap; }
+  .track { position: relative; height: 100%; display: flex; align-items: center;
+           background-image: linear-gradient(to right, var(--grid) 1px, transparent 1px);
+           background-size: calc(100% / 6) 100%; }
+  .bar { height: 20px; background: var(--series-1); border-radius: 0 4px 4px 0; }
+  .val { font-size: 12px; color: var(--text-secondary); margin-left: 6px; font-variant-numeric: tabular-nums; }
+  .row:hover .bar, .row:focus .bar { filter: brightness(1.12); }
+  .axis { display: grid; grid-template-columns: 170px 1fr; margin-top: 4px; }
+  .ticks { position: relative; height: 16px; font-size: 11px; color: var(--text-muted); }
+  .ticks span { position: absolute; transform: translateX(-50%); font-variant-numeric: tabular-nums; }
+  .axis-title { font-size: 11px; color: var(--text-muted); text-align: right; margin-top: 2px; }
+  .tip { position: fixed; pointer-events: none; background: var(--tip-bg); color: var(--tip-fg);
+         font-size: 12px; line-height: 1.5; padding: 8px 10px; border-radius: 6px; max-width: 300px;
+         opacity: 0; transition: opacity .1s; z-index: 10; }
+  .note { font-size: 12px; color: var(--text-secondary); line-height: 1.6; margin-top: 20px; }
+  details { margin-top: 20px; font-size: 13px; }
+  summary { cursor: pointer; color: var(--text-secondary); }
+  table { border-collapse: collapse; margin-top: 10px; width: 100%; }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--grid); vertical-align: top; }
+  th { font-weight: 600; color: var(--text-secondary); font-size: 12px; }
+  td.n { text-align: right; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+<div class="viz-root">
+  <div class="card">
+    <h1>광안리 후기 78건 중 27건이 '뷰·야경' 이야기였고, 온천용 기준표 태그가 맞은 후기는 11건뿐이었다</h1>
+    <p class="sub">
+      분모: 글이 있는 후기 80건 중 뜻을 읽을 수 없는 2건(연번 14·34)을 뺀 <b>78건</b> ·
+      기간: 등록일 2025-11-28 ~ 2026-11-15 ·
+      출처: 카카오맵 광안리해수욕장 후기(최신 순), 2026-11-16 모음 (<code>inputs/team_reviews_source.md</code>) ·
+      한 후기에 태그를 여러 개 붙일 수 있어 막대를 더하면 78이 넘는다.
+    </p>
+    <div id="chart" role="list" aria-label="태그별 리뷰 건수"></div>
+    <div class="axis"><div></div><div class="ticks" id="ticks"></div></div>
+    <div class="axis-title">리뷰 건수 (분모 78)</div>
+    <p class="note">기준표 = <code>review-codebook.md</code>(허심청 온천 후기로 만든 8개 태그). 새 태그 후보 = 기준표에 맞는 태그가 없어 새로 이름 붙인 것. 0건인 기준표 태그는 막대 없이 0으로 표시했다.</p>
+    <details>
+      <summary>표로 보기</summary>
+      <table id="table"><thead><tr><th>구분</th><th>태그</th><th>건수 / 78</th><th>연번</th></tr></thead><tbody></tbody></table>
+    </details>
+  </div>
+  <div class="tip" id="tip" role="tooltip"></div>
+</div>
+<script>
+const MAX = 30;
+const data = [
+  { g: "새 태그 후보", t: "뷰·야경", ids: [2,9,16,17,18,19,23,30,37,40,41,43,44,45,46,49,53,54,55,61,64,68,69,72,76,77,78] },
+  { g: "새 태그 후보", t: "행사(불꽃·드론쇼)", ids: [1,4,7,8,11,22,33,41,53,71,76] },
+  { g: "새 태그 후보", t: "해변 놀이·체험", ids: [5,13,68,80] },
+  { g: "새 태그 후보", t: "다른 해변과 비교", ids: [10,13,25,72] },
+  { g: "새 태그 후보", t: "바다·모래 상태", ids: [9,40,64] },
+  { g: "새 태그 후보", t: "해변 편의시설", ids: [25,28] },
+  { g: "새 태그 후보", t: "주변 가게·숙소", ids: [39,53] },
+  { g: "새 태그 후보", t: "찾아가기(지하철)", ids: [55] },
+  { g: "기준표 태그", t: "사람·다른 손님", ids: [3,29,33,39,80] },
+  { g: "기준표 태그", t: "운영·서비스", ids: [23,27,29,32,53] },
+  { g: "기준표 태그", t: "시설 상태·위생", ids: [22,24] },
+  { g: "기준표 태그", t: "가격", ids: [23,27] },
+  { g: "기준표 태그", t: "탕·욕실", ids: [] },
+  { g: "기준표 태그", t: "찜질방", ids: [] },
+  { g: "기준표 태그", t: "수질", ids: [] },
+  { g: "기준표 태그", t: "음식·매점", ids: [] },
+];
+const chart = document.getElementById("chart");
+const tip = document.getElementById("tip");
+const tbody = document.querySelector("#table tbody");
+let lastGroup = null;
+data.forEach(d => {
+  const n = d.ids.length;
+  if (d.g !== lastGroup) {
+    const h = document.createElement("div");
+    h.className = "group"; h.textContent = d.g; h.setAttribute("role", "presentation");
+    chart.appendChild(h); lastGroup = d.g;
+  }
+  const row = document.createElement("div");
+  row.className = "row"; row.tabIndex = 0; row.setAttribute("role", "listitem");
+  row.setAttribute("aria-label", `${d.g} ${d.t}: 78건 중 ${n}건`);
+  row.innerHTML = `<div class="label">${d.t}</div><div class="track">` +
+    (n ? `<div class="bar" style="width:${n / MAX * 100}%"></div>` : "") +
+    `<span class="val">${n}</span></div>`;
+  const tipHtml = `<b>${d.t}</b> (${d.g})<br>78건 중 ${n}건` + (n ? `<br>연번: ${d.ids.join(", ")}` : "");
+  const show = e => {
+    tip.innerHTML = tipHtml; tip.style.opacity = 1;
+    const r = row.getBoundingClientRect();
+    const x = e && e.clientX ? e.clientX + 14 : r.left + 180;
+    const y = e && e.clientY ? e.clientY + 14 : r.bottom + 4;
+    tip.style.left = Math.min(x, window.innerWidth - 320) + "px";
+    tip.style.top = y + "px";
+  };
+  const hide = () => { tip.style.opacity = 0; };
+  row.addEventListener("mousemove", show);
+  row.addEventListener("mouseleave", hide);
+  row.addEventListener("focus", () => show());
+  row.addEventListener("blur", hide);
+  chart.appendChild(row);
+  const tr = document.createElement("tr");
+  tr.innerHTML = `<td>${d.g}</td><td>${d.t}</td><td class="n">${n}</td><td>${d.ids.join(", ") || "—"}</td>`;
+  tbody.appendChild(tr);
+});
+const ticks = document.getElementById("ticks");
+for (let v = 0; v <= MAX; v += 5) {
+  const s = document.createElement("span");
+  s.style.left = (v / MAX * 100) + "%"; s.textContent = v; ticks.appendChild(s);
+}
+</script>
+</body>
+</html>
