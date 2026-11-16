@@ -1,0 +1,5 @@
+# 원본은 내 PC에만 둔다 (반 규칙 1 · 2026-11-14)
+# 닉네임·프로필이 섞인 통째 복사본과 필드워크 원본은 올리지 않는다.
+raw/
+inputs/kakao-raw.txt
+archive/*kakao-raw*.txt
